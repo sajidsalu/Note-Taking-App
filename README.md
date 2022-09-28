@@ -1,4 +1,4 @@
-# notes_app
+# Note Taking App
 
 note takng app
 
