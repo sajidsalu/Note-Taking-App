@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:notes_app/constants/colors.dart';
 import 'package:notes_app/models/note.dart';
+import 'package:notes_app/modules/create_note/create_note.dart';
 import 'package:notes_app/modules/details/details.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -30,7 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add,color: AppColors.white,),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> CreateScreen()));
+        },
       ),
       backgroundColor: Colors.black54,
       body: Container(
