@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/constants/colors.dart';
+import 'package:notes_app/constants/styles.dart';
 
 import '../../models/note.dart';
 class DetailScreen extends StatefulWidget {
@@ -30,11 +32,11 @@ class _DetailScreenState extends State<DetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(note.title,style: TextStyle(color: Colors.white, fontSize: 28,fontWeight: FontWeight.w700),),
+              Text(note.title,style: TextStyles.titleRead),
               SizedBox(height: 30,),
-              Text(note.datetime,style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w500),),
+              Text(note.datetime,style: TextStyles.dateRead.copyWith(color: AppColors.whiteSmoke.withOpacity(0.5))),
               SizedBox(height: 15,),
-              Text(note.note, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal,fontSize: 18),),
+              Text(note.note, style: TextStyles.noteRead),
             ],
           ),
         ),

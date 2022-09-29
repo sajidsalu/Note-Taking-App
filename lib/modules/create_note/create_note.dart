@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/constants/colors.dart';
+import 'package:notes_app/constants/styles.dart';
+import 'package:notes_app/l10n/l10.dart';
 import 'package:notes_app/models/note.dart';
 
 
@@ -30,13 +33,13 @@ class _CreateScreenState extends State<CreateScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                style: TextStyle(color: Colors.white,fontSize: 32.0, fontWeight: FontWeight.w500),
+                style: TextStyles.titleCreate,
                 maxLines: null,
                 cursorColor: Colors.white,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Title',
-                  hintStyle: TextStyle(fontSize: 32.0, color: Colors.white.withOpacity(0.5)),
+                  hintText: Localization.title,
+                  hintStyle: TextStyles.titleHint.copyWith(color: AppColors.white.withOpacity(0.5)),
                 ),
               ),
 
@@ -45,12 +48,12 @@ class _CreateScreenState extends State<CreateScreen> {
                 child: Expanded(
                   child: TextField(
                     maxLines: null,
-                    style: TextStyle(color: Colors.white,fontSize: 20.0,fontWeight: FontWeight.normal),
+                    style: TextStyles.noteCreate,
                     cursorColor: Colors.white,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'type something...',
-                      hintStyle: TextStyle(fontSize: 20.0, color: Colors.white.withOpacity(0.5)),
+                      hintText: Localization.typeSomething,
+                      hintStyle: TextStyles.noteHint.copyWith(color: AppColors.white.withOpacity(0.5)),
                     ),
                   ),
                 ),
@@ -78,7 +81,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
               borderRadius: BorderRadius.circular(5),
               color: Colors.grey,
             ),
-            child: Text("Save", style: TextStyle(fontSize: 18,color: Colors.white),),
+            child: Text(Localization.save, style: TextStyle(fontSize: 18,color: Colors.white),),
         ),
       ],
     ),
