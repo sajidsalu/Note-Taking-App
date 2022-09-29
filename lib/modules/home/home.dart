@@ -2,8 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:notes_app/constants/colors.dart';
+import 'package:notes_app/constants/styles.dart';
+import 'package:notes_app/l10n/l10.dart';
 import 'package:notes_app/models/note.dart';
+import 'package:notes_app/modules/create_note/create_note.dart';
 import 'package:notes_app/modules/details/details.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -30,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add,color: AppColors.white,),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> CreateScreen()));
+        },
       ),
       backgroundColor: Colors.black54,
       body: Container(
@@ -71,15 +78,15 @@ class _HomeScreenState extends State<HomeScreen> {
                child: Container(
                  child: Column(
                    children: [
-                     Text(item.title.trim(),style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.w500),),
+                     Text(item.title.trim(),style: TextStyles.title,),
                      SizedBox(height: 15,),
-                     Text(item.note.trim(),style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.normal),),
+                     Text(item.note.trim(),style: TextStyles.note,),
                    ],
                  ),
                ),
              ),
              SizedBox(height: 5,),
-             Text(item.datetime,style: TextStyle(fontSize: 12, color: Colors.black54.withOpacity(0.50), fontWeight: FontWeight.normal),),
+             Text(item.datetime,style: TextStyles.date..copyWith(color: Colors.black.withOpacity(0.5))),
            ],
          ),
        );
@@ -99,7 +106,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
       children: [
         Container(
             margin: EdgeInsets.only(left: 0),
-            child:Text("Notes",style: TextStyle(fontSize:28, color: Colors.white),)
+            child:Text(Localization.app_name,style: TextStyle(fontSize:28, color: Colors.white),)
         ),
         Container(
           padding: EdgeInsets.all(5),
