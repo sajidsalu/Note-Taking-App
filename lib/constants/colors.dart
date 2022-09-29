@@ -77,8 +77,8 @@ class AppColors {
   static const Color cardColor5 = Color(0xFF76b5c5);
   static const Color cardColor6 = Color(0xFFfde68a);
   static const Color cardColor7 = Color(0xFFabdbe3);
-  static const Color cardColor8 = Color(0xFF15803d);
-  static const Color cardColor9 = Color(0xFF16a34a);
+  static const Color cardColor8 = Color(0xFFe6ee9b);
+  static const Color cardColor9 = Color(0xFFffab91);
   static const Color cardColor10 = Color(0xFFeeeee4);
 
   static const cardColors = [AppColors.cardColor1,AppColors.cardColor2,AppColors.cardColor3,

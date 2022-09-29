@@ -1,13 +1,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_app/constants/colors.dart';
+import 'package:notes_app/constants/hive_boxes.dart';
 import 'package:notes_app/constants/styles.dart';
 import 'package:notes_app/l10n/l10.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/modules/create_note/create_note.dart';
 import 'package:notes_app/modules/details/details.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notes_app/utils/date_util.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,8 +21,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  late Box<Note> dataBox;
   List<Note> notesList = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,11 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
     notesList.add(Note.first());
     notesList.add(Note.second());
     notesList.add(Note.third());
+
+    dataBox = Hive.box<Note>(HiveBoxes.notes_box);
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar:true,
+      extendBodyBehindAppBar:true,
       appBar: _buildAppBar(context),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
@@ -50,51 +57,97 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   Widget _buildList(List<Note> noteList){
-    return GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-    ),
-      itemCount: notesList.length,
-      itemBuilder: (BuildContext context, int index){
-       var item = noteList[index];
-       var color = AppColors.cardColors[randomColor()];
-       return Container(
-         padding: EdgeInsets.all(10),
-         decoration: BoxDecoration(
-           border: Border.all(color: color),
-           borderRadius: BorderRadius.circular(5),
-           color: color,
-         ),
-         child: Column(
-           mainAxisSize: MainAxisSize.min,
-           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-           crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
-             InkWell(
-               onTap: (){
-                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DetailScreen(note: item,)));
-               },
-               child: Container(
-                 child: Column(
-                   children: [
-                     Text(item.title.trim(),style: TextStyles.title,),
-                     SizedBox(height: 15,),
-                     Text(item.note.trim(),style: TextStyles.note,),
-                   ],
-                 ),
-               ),
-             ),
-             SizedBox(height: 5,),
-             Text(item.datetime,style: TextStyles.date..copyWith(color: Colors.black.withOpacity(0.5))),
-           ],
-         ),
-       );
+    return ValueListenableBuilder(
+      valueListenable: dataBox.listenable(),
+      builder: (context,Box<Note> items, _) {
+        List<String> keys = items.keys.cast<String>().toList();
+        if(keys.length ==0){
+          return Column(
+              children:[
+                Container(
+                  margin: EdgeInsets.only(top: 10.0),
+                  color: Colors.transparent,
+                  child:
+                  Center(child:Image.asset("assets/images/no-data.png",fit: BoxFit.fill,))
+                ),
+                Text("No Saved Notes.",style: TextStyles.titleHint,),
+                Text("Start adding notes....",style: TextStyles.noteHint,),
+              ]
+          );
+        }
+        return  GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
 
+        ),
+          itemCount: keys.length,
+          itemBuilder: (BuildContext context, int index){
+            var key = keys[index];
+            var item = items.get(key);
+            var color = AppColors.cardColors[randomColor()];
+            return _noteCardItem(item!, color);
+          },
+        );
       },
     );
   }
+
+  Widget _noteCardItem(Note item, Color color){
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DetailScreen(note: item,)));
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(color: color),
+          borderRadius: BorderRadius.circular(5),
+          color: color,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DetailScreen(note: item,)));
+              },
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.title.trim(),style: TextStyles.title,),
+                    const SizedBox(height: 15,),
+                    Text(item.note.trim(),
+                      maxLines: 4,
+                      style: TextStyles.note,overflow: TextOverflow.ellipsis,),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 5,),
+           Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             crossAxisAlignment: CrossAxisAlignment.end,
+             children: [
+               Text(DateUtil.formatDate(item.datetime),style: TextStyles.date..copyWith(color: Colors.black.withOpacity(0.5))),
+               InkWell(child: Icon(Icons.delete,),
+               onTap: ()async{
+                 await dataBox.delete(item.id);
+               },),
+             ],
+           )
+
+          ],
+        ),
+      ),
+    );
+  }
 }
+
+
 
 PreferredSizeWidget _buildAppBar(BuildContext context) {
   return AppBar(

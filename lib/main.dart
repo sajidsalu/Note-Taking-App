@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_app/constants/globals.dart';
+import 'package:notes_app/constants/hive_boxes.dart';
 import 'package:notes_app/l10n/l10.dart';
+import 'package:notes_app/models/note.dart';
 import 'package:notes_app/modules/home/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-void main() {
+import 'package:path_provider/path_provider.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final document = await getApplicationDocumentsDirectory();
+  final summaryBoxExists = await Hive.boxExists(HiveBoxes.notes_box,path: document.path);
+  Hive.init(document.path);
+  Hive.registerAdapter(NoteAdapter());
+  await Hive.openBox<Note>(HiveBoxes.notes_box);
   runApp(const MyApp());
 }
 
